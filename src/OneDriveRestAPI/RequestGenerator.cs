@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using OneDriveRestAPI.Model;
 using OneDriveRestAPI.Util;
 
@@ -96,13 +95,10 @@ namespace OneDriveRestAPI
             return request;
         }
 
-        public IRequest GetContents(string id, bool pretty = false)
+        public IRequest GetContents(string id)
         {
-            Request request = string.IsNullOrWhiteSpace(id)
-                ? ContentRequest(HttpMethod.Get, ContentUrlBase, "me/skydrive/files")
-                : ContentRequest(HttpMethod.Get, ContentUrlBase, id + "/files");
-
-            request.AddParameter("pretty", pretty.ToString());
+            var resource = string.IsNullOrWhiteSpace(id) ? "me/skydrive/files" : id + "/files";
+            Request request = ContentRequest(HttpMethod.Get, ContentUrlBase, resource);
 
             return request;
         }

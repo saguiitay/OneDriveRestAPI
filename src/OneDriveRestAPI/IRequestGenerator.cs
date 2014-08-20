@@ -13,7 +13,7 @@ namespace OneDriveRestAPI
         IRequest Get(string id);
         IRequest GetMe();
         IRequest GetProfilePicture(PictureSize size = PictureSize.Medium);
-        IRequest GetContents(string id, bool pretty = false);
+        IRequest GetContents(string id);
         IRequest CreateFolder(string parentFolderId, string name, string description = null);
         IRequest Copy(string sourceId, string newParentId);
         IRequest Delete(string id);

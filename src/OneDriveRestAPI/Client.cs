@@ -124,9 +124,9 @@ namespace OneDriveRestAPI
             return null;
         }
 
-        public async Task<IEnumerable<File>> GetContentsAsync(string id = null, bool pretty = false)
+        public async Task<IEnumerable<File>> GetContentsAsync(string id = null)
         {
-            var result = await Execute<File>(() => RequestGenerator.GetContents(id, pretty));
+            var result = await Execute<File>(() => RequestGenerator.GetContents(id));
             return result.Data;
         }
 
