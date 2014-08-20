@@ -159,3 +159,7 @@ $RECYCLE.BIN/
 /src/packages/Microsoft.Net.Http.2.2.22
 /src/packages/Microsoft.Net.Http.2.2.27-beta
 /src/packages/Newtonsoft.Json.6.0.4
+/src/packages/Newtonsoft.Json.6.0.1
+/src/packages/OneDriveRestAPI.1.0.0
+/src/packages/OneDriveRestAPI.1.0.1
+/src/NuGet.Package

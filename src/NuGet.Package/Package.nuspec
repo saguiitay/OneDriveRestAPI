@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>OneDriveRestAPI</id>
+    <version>1.0.1</version>
+    <title>OneDriveRestAPI</title>
+    <authors>saguiitay</authors>
+    <owners></owners>
+    <description>
+      OneDriveRestAPIt is a C# client for the Microsoft OneDrive service through its RESTful API.
+      Microsoft has released the Live SDK, a set of C# libraries for interacting with OneDrive, which is hard to extend and debug, as it relies on async HttpWebRequest/HttpWebResponse.
+    </description>
+    <releaseNotes>
+    </releaseNotes>
+    <summary>
+      OneDrive RestAPI implementation based on HttpClient
+    </summary>
+    <language>en-US</language>
+    <projectUrl>https://github.com/saguiitay/OneDriveRestAPI</projectUrl>
+    <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
+    <copyright>Copyright 2014</copyright>
+    <tags>SkyDrive OneDrive HttpClient REST</tags>
+    <dependencies>
+        <group targetFramework="net45">
+          <dependency id="Microsoft.Net.Http" version="[2.2.22,)" />
+          <dependency id="Newtonsoft.Json" version="[6.0.0,)" />
+        </group>
+    </dependencies>
+    <references>
+      <reference file="OneDriveRestAPI.dll"></reference>
+    </references>
+  </metadata>
+  <files>
+    <file src="..\OneDriveRestAPI\bin\Release\OneDriveRestAPI.dll" target="lib\net45" />
+  </files>
+</package>
