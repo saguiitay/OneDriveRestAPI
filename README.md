@@ -2,7 +2,7 @@
 
 ## About
 
-OneDriveRestAPIt is a C# client for the Microsoft OneDrive service through its RESTful API.
+OneDriveRestAPI is a C# client for the Microsoft OneDrive service through its RESTful API.
 
 Microsoft has released the [Live SDK](http://msdn.microsoft.com/en-US/live/ff621310 "Microsoft Live SDK"), a set of C# libraries for interacting with OneDrive, which is hard to extend and debug, as it relies on async HttpWebRequest/HttpWebResponse.
 
@@ -12,8 +12,13 @@ OneDriveRestAPI is based on [John Hoerr](https://twitter.com/johnhoerr)'s [SkyNe
 
 You can contact me on twitter [@saguiitay](https://twitter.com/saguiitay).
 
+## NuGet
+
+OneDriveRestAPI is available as a [NuGet package](https://www.nuget.org/packages/OneDriveRestAPI)
+
 ## Release Notes
 
++ **1.0.1**   Added [NuGet Package](https://www.nuget.org/packages/OneDriveRestAPI).
 + **1.0.0**   Initial release.
 
 ## Usage
