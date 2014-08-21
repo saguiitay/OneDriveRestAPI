@@ -18,6 +18,10 @@ OneDriveRestAPI is available as a [NuGet package](https://www.nuget.org/packages
 
 ## Release Notes
 
++ **1.1.0**   Change the way Client is created, to allow better extendibility:
+  + Added a new IHttpClientFactory witha default implementation
+  + Client now accept an IRequestGenerator
+  + Added Throttling mechanism to avoid overwhelming the OneDrive service, and getting errors
 + **1.0.1**   Added [NuGet Package](https://www.nuget.org/packages/OneDriveRestAPI).
 + **1.0.0**   Initial release.
 
