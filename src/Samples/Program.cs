@@ -26,8 +26,8 @@ namespace Samples
         {
             var options = new Options
                 {
-                    ClientId = "0000000040062715",
-                    ClientSecret = "kJmnSnkHhIIT4dSzIAYcv7INS9rtjwRQ",
+                    ClientId = "...",
+                    ClientSecret = "...",
                     CallbackUrl = "https://login.live.com/oauth20_desktop.srf",
 
                     AutoRefreshTokens = true,
