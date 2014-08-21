@@ -1,106 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
+using OneDriveRestAPI.Http;
 using OneDriveRestAPI.Model;
 using OneDriveRestAPI.Model.Exceptions;
-using OneDriveRestAPI.Util;
 using File = OneDriveRestAPI.Model.File;
 using FileInfo = OneDriveRestAPI.Model.FileInfo;
 
 namespace OneDriveRestAPI
 {
-    public partial class Client
+    public partial class Client : IClient
     {
-        private readonly string _clientId;
-        private readonly string _clientSecret;
-        private readonly string _callbackUrl;
-
         private readonly HttpClient _clientOAuth;
         private readonly HttpClient _clientContent;
         private readonly HttpClient _clientContentNoRedirection;
 
-        private UserToken _token;
+        private readonly Options _options;
 
-        public UserToken UserToken { get { return _token; } }
         public IRequestGenerator RequestGenerator { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="clientId">Application ClientId</param>
-        /// <param name="clientSecret">Application secret</param>
-        /// <param name="callbackUrl">Application Callback</param>
-        /// <param name="accessToken">User AccessToken</param>
-        /// <param name="refreshToken">User RefreshToken</param>
-        /// <param name="handlerWrapper">Function that allows wrapping the various HttpMessageHandlers used to communicate with the API</param>
-        public Client(string clientId, string clientSecret, string callbackUrl, string accessToken = null, string refreshToken = null,
-            Func<HttpMessageHandler, HttpMessageHandler> handlerWrapper = null)
+        public string UserAccessToken
         {
-            _clientId = clientId;
-            _clientSecret = clientSecret;
-            _callbackUrl = callbackUrl;
+            get { return _options.AccessToken; }
+            set { _options.AccessToken = value; }
+        }
 
-            var oauthHandler = new HttpClientHandler();
-            if (oauthHandler.SupportsAutomaticDecompression)
-                oauthHandler.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-
-            if (handlerWrapper != null)
-                _clientOAuth = new HttpClient(handlerWrapper(oauthHandler));
-            else
-                _clientOAuth = new HttpClient(oauthHandler);
+        public string UserRefreshToken
+        {
+            get { return _options.RefreshToken; }
+            set { _options.RefreshToken = value; }
+        }
 
 
-            var contentHandler = new HttpClientHandler();
-            if (contentHandler.SupportsAutomaticDecompression)
-                contentHandler.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-            var tokenHandler = new AccessTokenAuthenticator(() => _token.Access_Token, contentHandler);
-            if (handlerWrapper != null)
-                _clientContent = new HttpClient(handlerWrapper(tokenHandler));
-            else
-                _clientContent = new HttpClient(tokenHandler);
+        public Client(Options options)
+            : this(new HttpClientFactory(), new RequestGenerator(), options)
+        { }
 
-            var contentNoRedirectionHandler = new HttpClientHandler { AllowAutoRedirect = false };
-            if (contentNoRedirectionHandler.SupportsAutomaticDecompression)
-                contentNoRedirectionHandler.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-            var tokenNoRedirectionHandler = new AccessTokenAuthenticator(() => _token.Access_Token, contentNoRedirectionHandler);
-            if (handlerWrapper != null)
-                _clientContentNoRedirection = new HttpClient(handlerWrapper(tokenNoRedirectionHandler));
-            else
-                _clientContentNoRedirection = new HttpClient(tokenNoRedirectionHandler);
+        public Client(IHttpClientFactory clientFactory, IRequestGenerator requestGenerator, Options options)
+        {
+            _options = options;
+
+            _clientOAuth = clientFactory.CreateHttpClient(new HttpClientOptions());
+            _clientContent = clientFactory.CreateHttpClient(new HttpClientOptions {AddTokenToRequests = true, TokenRetriever = () => _options.AccessToken});
+            _clientContentNoRedirection = clientFactory.CreateHttpClient(new HttpClientOptions {AllowAutoRedirect = false, AddTokenToRequests = true, TokenRetriever = () => _options.AccessToken});
 
 
-            RequestGenerator = new RequestGenerator();
-
-            _token = new UserToken { Access_Token = accessToken, Refresh_Token = refreshToken };
+            RequestGenerator = requestGenerator;
         }
 
 
         public string GetAuthorizationRequestUrl(IEnumerable<Scope> requestedScopes, string state = null)
         {
-            var request = RequestGenerator.Authorize(_clientId, _callbackUrl, requestedScopes, state);
+            var request = RequestGenerator.Authorize(_options.ClientId, _options.CallbackUrl, requestedScopes, state);
             return request.BuildUri().AbsoluteUri;
-
         }
 
 
         public async Task<UserToken> GetAccessTokenAsync(string authorizationCode)
         {
-            var getAccessToken = RequestGenerator.GetAccessToken(_clientId, _clientSecret, _callbackUrl, authorizationCode);
+            var getAccessToken = RequestGenerator.GetAccessToken(_options.ClientId, _options.ClientSecret, _options.CallbackUrl, authorizationCode);
             var token = await ExecuteAuthorization<UserToken>(getAccessToken);
 
-            Interlocked.Exchange(ref _token, token);
+            _options.AccessToken = token.Access_Token;
+            _options.RefreshToken = token.Refresh_Token;
+
             return token;
         }
 
         public async Task<UserToken> RefreshAccessTokenAsync()
         {
-            var refreshAccessToken = RequestGenerator.RefreshAccessToken(_clientId, _clientSecret, _callbackUrl, _token.Refresh_Token);
+            var refreshAccessToken = RequestGenerator.RefreshAccessToken(_options.ClientId, _options.ClientSecret, _options.CallbackUrl, UserRefreshToken);
             var token = await ExecuteAuthorization<UserToken>(refreshAccessToken);
-            Interlocked.Exchange(ref _token, token);
+
+            _options.AccessToken = token.Access_Token;
+            _options.RefreshToken = token.Refresh_Token;
 
             return token;
         }
@@ -133,36 +107,6 @@ namespace OneDriveRestAPI
         public async Task<Folder> CreateFolderAsync(string parentFolderId, string name, string description = null)
         {
             return await Execute<Folder>(() => RequestGenerator.CreateFolder(parentFolderId, name, description));
-        }
-
-        public async Task<File> CreateFileAsync(string parentFolderId, string name, string contentType)
-        {
-            return await WriteAsync(parentFolderId, new byte[0], name, contentType);
-        }
-
-        public async Task<File> WriteAsync(string parentFolderId, byte[] content, string name, string contentType)
-        {
-            using (var stream = new MemoryStream(content))
-            {
-                return await WriteAsync(parentFolderId, stream, name, contentType);
-            }
-        }
-
-        public async Task<File> WriteAsync(string parentFolderId, Stream content, string name, string contentType)
-        {
-            return await Execute<File>(() => RequestGenerator.Write(parentFolderId, name, content, contentType));
-        }
-
-        public async Task<byte[]> Read(string id, ulong startByte = 0, ulong? endByte = null)
-        {
-            var response = await Execute(() => RequestGenerator.Read(id, startByte, endByte));
-            return await response.Content.ReadAsByteArrayAsync();
-        }
-
-        public async Task<byte[]> ReadAsync(string id, ulong startByte = 0, ulong? endByte = null)
-        {
-            var response = await Execute(() => RequestGenerator.Read(id, startByte, endByte));
-            return await response.Content.ReadAsByteArrayAsync();
         }
 
         public async Task<Stream> DownloadAsync(string id)

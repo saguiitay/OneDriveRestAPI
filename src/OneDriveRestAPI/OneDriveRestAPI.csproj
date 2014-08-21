@@ -61,9 +61,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Http\HttpClientFactory.cs" />
+    <Compile Include="Http\HttpClientOptions.cs" />
+    <Compile Include="Http\IHttpClientFactory.cs" />
+    <Compile Include="Http\ThrottlingMessageHandler.cs" />
+    <Compile Include="Util\TimeSpanSemaphore.cs" />
+    <Compile Include="IClient.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="IRequestGenerator.cs" />
     <Compile Include="Util\HttpClientExtensions.cs" />
-    <Compile Include="Util\AccessTokenAuthenticator.cs" />
+    <Compile Include="Http\AccessTokenAuthenticator.cs" />
     <Compile Include="Model\Address.cs" />
     <Compile Include="Model\Addresses.cs" />
     <Compile Include="Model\Album.cs" />

@@ -24,13 +24,20 @@ namespace Samples
 
         public static async Task Run()
         {
+            var options = new Options
+                {
+                    ClientId = "0000000040062715",
+                    ClientSecret = "kJmnSnkHhIIT4dSzIAYcv7INS9rtjwRQ",
+                    CallbackUrl = "https://login.live.com/oauth20_desktop.srf",
 
-            const string clientId = "";
-            const string clientSecret = "";
-            const string callbackUrl = "";
-            
+                    AutoRefreshTokens = true,
+                    PrettyJson = false,
+                    ReadRequestsPerSecond = 2,
+                    WriteRequestsPerSecond = 2
+                };
+
             // Initialize a new Client (without an Access/Refresh tokens
-            var client = new Client(clientId, clientSecret, callbackUrl);
+            var client = new Client(options);
 
             // Get the OAuth Request Url
             var authRequestUrl = client.GetAuthorizationRequestUrl(new[] {Scope.Basic, Scope.Signin, Scope.SkyDrive, Scope.SkyDriveUpdate});
@@ -63,7 +70,9 @@ namespace Samples
 
 
             // Initialize a new Client, this time by providing previously requested Access/Refresh tokens
-            var client2 = new Client(clientId, clientSecret, callbackUrl, token.Access_Token, token.Refresh_Token);
+            options.AccessToken = token.Access_Token;
+            options.AccessToken = token.Refresh_Token;
+            var client2 = new Client(options);
 
             // Find a file in the root folder
             var file = folderContent.FirstOrDefault(x => x.Type == File.FileType);

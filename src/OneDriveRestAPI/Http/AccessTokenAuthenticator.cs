@@ -2,9 +2,8 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 
-namespace OneDriveRestAPI.Util
+namespace OneDriveRestAPI.Http
 {
     public class AccessTokenAuthenticator : DelegatingHandler
     {
