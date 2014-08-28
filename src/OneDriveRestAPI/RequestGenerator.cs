@@ -124,16 +124,6 @@ namespace OneDriveRestAPI
             return request;
         }
 
-        public IRequest Write(string parentFolderId, string name, Stream content, string contentType)
-        {
-            string resource = string.IsNullOrWhiteSpace(parentFolderId) ? "me/skydrive/files" : parentFolderId + "/files";
-            var request = ContentRequest(HttpMethod.Post, ContentUrlBase, resource);
-
-            request.Content = new StreamContent(content);
-
-            return request;
-        }
-
         public IRequest Upload(string parentFolderId, string name, Stream content, OverwriteOption overwrite = OverwriteOption.Overwrite, bool downsizePhotoUpload = false)
         {
             string resource = string.IsNullOrWhiteSpace(parentFolderId) ? "me/skydrive/files/" + name : parentFolderId + "/files/" + name;

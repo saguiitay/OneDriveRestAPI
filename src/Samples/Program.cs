@@ -58,7 +58,7 @@ namespace Samples
             Console.WriteLine("Avatar: " + userProfilePicture);
 
             // Retrieve the root folder
-            var rootFolder = await client.GetAsync();
+            var rootFolder = await client.GetFolderAsync();
             Console.WriteLine("Root Folder: {0} (Id: {1})", rootFolder.Name, rootFolder.Id);
 
             // Retrieve the content of the root folder

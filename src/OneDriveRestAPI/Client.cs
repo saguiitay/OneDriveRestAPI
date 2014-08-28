@@ -56,7 +56,6 @@ namespace OneDriveRestAPI
             return request.BuildUri().AbsoluteUri;
         }
 
-
         public async Task<UserToken> GetAccessTokenAsync(string authorizationCode)
         {
             var getAccessToken = RequestGenerator.GetAccessToken(_options.ClientId, _options.ClientSecret, _options.CallbackUrl, authorizationCode);
@@ -79,11 +78,6 @@ namespace OneDriveRestAPI
             return token;
         }
 
-        public async Task<File> GetAsync(string id = null)
-        {
-            return await Execute<File>(() => RequestGenerator.Get(id));
-        }
-
         public async Task<User> GetMeAsync()
         {
             return await Execute<User>(() => RequestGenerator.GetMe());
@@ -98,10 +92,20 @@ namespace OneDriveRestAPI
             return null;
         }
 
+        public async Task<Folder> GetFolderAsync(string id = null)
+        {
+            return await Execute<Folder>(() => RequestGenerator.Get(id));
+        }
+
         public async Task<IEnumerable<File>> GetContentsAsync(string id = null)
         {
             var result = await Execute<File>(() => RequestGenerator.GetContents(id));
             return result.Data;
+        }
+
+        public async Task<File> GetFileAsync(string id = null)
+        {
+            return await Execute<File>(() => RequestGenerator.Get(id));
         }
 
         public async Task<Folder> CreateFolderAsync(string parentFolderId, string name, string description = null)
@@ -136,15 +140,9 @@ namespace OneDriveRestAPI
             return await Execute<FileInfo>(() => RequestGenerator.Upload(parentFolderId, name, content, overwrite, downsizePhotoUpload));
         }
 
-
         public async Task<File> CopyAsync(string sourceId, string newParentId)
         {
             return await Execute<File>(() => RequestGenerator.Copy(sourceId, newParentId));
-        }
-
-        public async Task RenameAsync(string id, string name)
-        {
-            await Execute(() => RequestGenerator.Rename(id, name));
         }
 
         public async Task<File> RenameFileAsync(string id, string name)
@@ -152,19 +150,9 @@ namespace OneDriveRestAPI
             return await Execute<File>(() => RequestGenerator.Rename(id, name));
         }
 
-        public async Task<Folder> RenameFolder(string id, string name)
-        {
-            return await Execute<Folder>(() => RequestGenerator.Rename(id, name));
-        }
-
         public async Task<Folder> RenameFolderAsync(string id, string name)
         {
             return await Execute<Folder>(() => RequestGenerator.Rename(id, name));
-        }
-
-        public async Task MoveAsync(string id, string newParentId)
-        {
-            await Execute(() => RequestGenerator.Move(id, newParentId));
         }
 
         public async Task<File> MoveFileAsync(string id, string newParentId)
@@ -176,7 +164,6 @@ namespace OneDriveRestAPI
         {
             return await Execute<Folder>(() => RequestGenerator.Move(id, newParentId));
         }
-
 
         public async Task DeleteAsync(string id)
         {

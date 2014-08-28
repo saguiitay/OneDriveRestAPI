@@ -17,7 +17,6 @@ namespace OneDriveRestAPI
         IRequest CreateFolder(string parentFolderId, string name, string description = null);
         IRequest Copy(string sourceId, string newParentId);
         IRequest Delete(string id);
-        IRequest Write(string parentFolderId, string name, Stream content, string contentType);
         IRequest Upload(string parentFolderId, string name, Stream content, OverwriteOption overwrite = OverwriteOption.Overwrite, bool downsizePhotoUpload = false);
         IRequest Read(string id, ulong startByte = 0, ulong? endByte = null);
         IRequest Move(string sourceId, string newParentId);
