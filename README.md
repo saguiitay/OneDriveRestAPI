@@ -18,6 +18,7 @@ OneDriveRestAPI is available as a [NuGet package](https://www.nuget.org/packages
 
 ## Release Notes
 
++ **1.2.0**   Replaced GetAsync method with separate GetFolderAsync & GetFileAsync. Additional cleanup to public interfaces.
 + **1.1.0**   Change the way Client is created, to allow better extendibility:
   + Added a new IHttpClientFactory witha default implementation
   + Client now accept an IRequestGenerator
@@ -28,12 +29,20 @@ OneDriveRestAPI is available as a [NuGet package](https://www.nuget.org/packages
 ## Usage
 
 ```csharp
-const string clientId = "";
-const string clientSecret = "";
-const string callbackUrl = "";
-            
+var options = new Options
+    {
+        ClientId = "...",
+        ClientSecret = "...",
+        CallbackUrl = "https://login.live.com/oauth20_desktop.srf",
+
+        AutoRefreshTokens = true,
+        PrettyJson = false,
+        ReadRequestsPerSecond = 2,
+        WriteRequestsPerSecond = 2
+    };
+
 // Initialize a new Client (without an Access/Refresh tokens
-var client = new Client(clientId, clientSecret, callbackUrl);
+var client = new Client(options);
 
 // Get the OAuth Request Url
 var authRequestUrl = client.GetAuthorizationRequestUrl(new[] {Scope.Basic, Scope.Signin, Scope.SkyDrive, Scope.SkyDriveUpdate});
@@ -54,7 +63,7 @@ var userProfilePicture = await client.GetProfilePictureAsync(PictureSize.Small);
 Console.WriteLine("Avatar: " + userProfilePicture);
 
 // Retrieve the root folder
-var rootFolder = await client.GetAsync();
+var rootFolder = await client.GetFolderAsync();
 Console.WriteLine("Root Folder: {0} (Id: {1})", rootFolder.Name, rootFolder.Id);
 
 // Retrieve the content of the root folder
