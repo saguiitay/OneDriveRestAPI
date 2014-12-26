@@ -129,7 +129,7 @@ namespace OneDriveRestAPI
             string resource = string.IsNullOrWhiteSpace(parentFolderId) ? "me/skydrive/files/" + name : parentFolderId + "/files/" + name;
             Request request = ContentRequest(HttpMethod.Put, ContentUrlBase, resource);
             request.AddParameter("overwrite", overwrite.GetDescription());
-            request.AddParameter("downsizePhotoUpload", downsizePhotoUpload.ToString());
+            request.AddParameter("downsize_photo_uploads", downsizePhotoUpload.ToString());
 
             if (content.CanSeek)
                 content.Position = 0;
