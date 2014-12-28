@@ -18,6 +18,7 @@ OneDriveRestAPI is available as a [NuGet package](https://www.nuget.org/packages
 
 ## Release Notes
 
++ **1.3.2**   Fixed usage of downsize\_photo\_uploads when uploading images 
 + **1.2.0**   Replaced GetAsync method with separate GetFolderAsync & GetFileAsync. Additional cleanup to public interfaces.
 + **1.1.0**   Change the way Client is created, to allow better extendibility:
   + Added a new IHttpClientFactory witha default implementation
