@@ -19,7 +19,7 @@ namespace OneDriveRestAPI.Util
                 }
             }
 
-            return await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+            return await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
         }
     }
 }

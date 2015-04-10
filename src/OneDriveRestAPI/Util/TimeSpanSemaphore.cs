@@ -107,7 +107,7 @@ namespace OneDriveRestAPI.Util
 
             try
             {
-                await action();
+                await action().ConfigureAwait(false);
             }
             finally
             {
@@ -125,7 +125,7 @@ namespace OneDriveRestAPI.Util
 
             try
             {
-                await action(arg);
+                await action(arg).ConfigureAwait(false);
             }
             finally
             {
@@ -143,7 +143,7 @@ namespace OneDriveRestAPI.Util
 
             try
             {
-                return await action(arg, cancelToken);
+                return await action(arg, cancelToken).ConfigureAwait(false);
             }
             finally
             {

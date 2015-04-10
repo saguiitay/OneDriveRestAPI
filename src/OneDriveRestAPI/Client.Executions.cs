@@ -16,7 +16,7 @@ namespace OneDriveRestAPI
 
         private async Task<T> ExecuteAuthorization<T>(IRequest restRequest) where T : new()
         {
-            return await Execute<T>(() => restRequest, _clientOAuth);
+            return await Execute<T>(() => restRequest, _clientOAuth).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> Execute(Func<IRequest> restRequest, HttpClient restClient = null)
@@ -30,8 +30,8 @@ namespace OneDriveRestAPI
             {
                 var request = restRequest();
 
-                restResponse = await restClient.Execute(request);
-                await CheckForError(restResponse);
+                restResponse = await restClient.Execute(request).ConfigureAwait(false);
+                await CheckForError(restResponse).ConfigureAwait(false);
             }
             catch (TokenExpiredException)
             {
@@ -40,11 +40,11 @@ namespace OneDriveRestAPI
             }
             if (refresh)
             {
-                await RefreshAccessTokenAsync();
+                await RefreshAccessTokenAsync().ConfigureAwait(false);
 
                 var request = restRequest();
-                restResponse = await restClient.Execute(request);
-                await CheckForError(restResponse);
+                restResponse = await restClient.Execute(request).ConfigureAwait(false);
+                await CheckForError(restResponse).ConfigureAwait(false);
             }
 
             return restResponse;
@@ -62,8 +62,8 @@ namespace OneDriveRestAPI
             {
                 var request = restRequest();
 
-                restResponse = await restClient.Execute(request);
-                content = await CheckForError(restResponse);
+                restResponse = await restClient.Execute(request).ConfigureAwait(false);
+                content = await CheckForError(restResponse).ConfigureAwait(false);
             }
             catch (TokenExpiredException)
             {
@@ -72,12 +72,12 @@ namespace OneDriveRestAPI
 
             if (refresh)
             {
-                await RefreshAccessTokenAsync();
+                await RefreshAccessTokenAsync().ConfigureAwait(false);
 
                 var request = restRequest();
 
-                restResponse = await restClient.Execute(request);
-                content = await CheckForError(restResponse);
+                restResponse = await restClient.Execute(request).ConfigureAwait(false);
+                content = await CheckForError(restResponse).ConfigureAwait(false);
             }
 
             var data = JsonConvert.DeserializeObject<T>(content);
@@ -88,7 +88,7 @@ namespace OneDriveRestAPI
         private async Task<string> CheckForError(HttpResponseMessage httpResponse)
         {
             var statusCode = httpResponse.StatusCode;
-            var content = await httpResponse.Content.ReadAsStringAsync();
+            var content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (statusCode == 0)
                 throw new HttpServerException((int)statusCode, content) { Attempts = 1 };
