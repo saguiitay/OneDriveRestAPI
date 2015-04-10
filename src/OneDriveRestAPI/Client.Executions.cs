@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using OneDriveRestAPI.Model;
 using OneDriveRestAPI.Model.Exceptions;
 using OneDriveRestAPI.Util;
-using HttpException = OneDriveRestAPI.Util.HttpException;
 
 namespace OneDriveRestAPI
 {
@@ -92,7 +91,7 @@ namespace OneDriveRestAPI
             var content = await httpResponse.Content.ReadAsStringAsync();
 
             if (statusCode == 0)
-                throw new HttpException((int)statusCode, content) { Attempts = 1 };
+                throw new HttpServerException((int)statusCode, content) { Attempts = 1 };
 
             if ((int)statusCode == 420)
             {
@@ -112,7 +111,7 @@ namespace OneDriveRestAPI
             {
                 var errorInfo = JsonConvert.DeserializeObject<ErrorInfo>(content);
                 if (errorInfo == null || errorInfo.Error == null)
-                    throw new HttpException((int)statusCode, content) { Attempts = 1 };
+                    throw new HttpServerException((int)statusCode, content) { Attempts = 1 };
 
                 if (errorInfo.Error.Code == "request_token_expired")
                     throw new TokenExpiredException();
@@ -123,7 +122,7 @@ namespace OneDriveRestAPI
             if (statusCode == HttpStatusCode.InternalServerError ||
                 statusCode == HttpStatusCode.BadGateway)
             {
-                throw new HttpException((int)statusCode, content) { Attempts = int.MaxValue };
+                throw new HttpServerException((int)statusCode, content) { Attempts = int.MaxValue };
             }
 
             return content;

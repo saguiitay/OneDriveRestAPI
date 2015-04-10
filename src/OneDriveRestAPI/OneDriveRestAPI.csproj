@@ -91,7 +91,7 @@
     <Compile Include="Model\From.cs" />
     <Compile Include="Model\Image.cs" />
     <Compile Include="Model\Location.cs" />
-    <Compile Include="Util\HttpException.cs" />
+    <Compile Include="Util\HttpServerException.cs" />
     <Compile Include="Util\JsonContent.cs" />
     <Compile Include="Util\NameValueCollectionExtensions.cs" />
     <Compile Include="Model\Exceptions\NotEnoughQuotaException.cs" />
