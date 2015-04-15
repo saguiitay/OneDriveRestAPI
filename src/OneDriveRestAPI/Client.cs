@@ -174,5 +174,11 @@ namespace OneDriveRestAPI
         {
             return await Execute<UserQuota>(() => RequestGenerator.Quota()).ConfigureAwait(false);
         }
+
+        public async Task<IEnumerable<File>> SearchAsync(string pattern)
+        {
+            var result = await Execute<File>(() => RequestGenerator.Search(pattern)).ConfigureAwait(false);
+            return result.Data;
+        }
     }
 }
