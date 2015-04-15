@@ -22,5 +22,6 @@ namespace OneDriveRestAPI
         IRequest Move(string sourceId, string newParentId);
         IRequest Rename(string id, string name);
         IRequest Quota();
+        IRequest Search(string pattern);
     }
 }

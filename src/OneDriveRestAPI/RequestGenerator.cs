@@ -174,6 +174,13 @@ namespace OneDriveRestAPI
             return request;
         }
 
+        public IRequest Search(string pattern)
+        {
+            var request = ContentRequest(HttpMethod.Get, ContentUrlBase, "me/skydrive/search");
+            request.AddParameter("q", pattern);
+            return request;
+        }
+
         private Request ContentRequest(HttpMethod method, string baseUrl, string resource)
         {
             var request = new Request
